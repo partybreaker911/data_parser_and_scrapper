@@ -1,0 +1,15 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Список продукции</title>
+</head>
+<body>
+    <h1>Список продуктов</h1>
+    <ul>
+        {% for product_name in product_names %}
+            <li><a href="/product/{{ product_name }}">{{ product_name }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
