@@ -1,0 +1,66 @@
+!DOCTYPE html>
+<html>
+<head>
+    <title>Product Selection</title>
+</head>
+<body>
+    <h1>Select a Category, Subcategory, and Product:</h1>
+    <form action="/products" method="POST">
+        <label for="category">Category:</label>
+        <select name="category" id="category">
+            {% for category in categories %}
+            <option value="{{ category[0] }}">{{ category[0] }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="subcategory">Subcategory:</label>
+        <select name="subcategory" id="subcategory"></select><br><br>
+
+        <label for="product">Product:</label>
+        <select name="product" id="product"></select><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <script>
+        // Fetch subcategories based on the selected category
+        document.getElementById('category').addEventListener('change', function () {
+            var category = this.value;
+            fetch('/subcategories?category=' + category)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    var subcategorySelect = document.getElementById('subcategory');
+                    subcategorySelect.innerHTML = '';
+                    data.forEach(function (subcategory) {
+                        var option = document.createElement('option');
+                        option.text = subcategory;
+                        option.value = subcategory;
+                        subcategorySelect.appendChild(option);
+                    });
+                });
+        });
+
+        // Fetch products based on the selected subcategory
+        document.getElementById('subcategory').addEventListener('change', function () {
+            var subcategory = this.value;
+            var category = document.getElementById('category').value;
+            fetch('/products?category=' + category + '&subcategory=' + subcategory)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (data) {
+                    var productSelect = document.getElementById('product');
+                    productSelect.innerHTML = '';
+                    data.forEach(function (product) {
+                        var option = document.createElement('option');
+                        option.text = product;
+                        option.value = product;
+                        productSelect.appendChild(option);
+                    });
+                });
+        });
+    </script>
+</body>
+</html>

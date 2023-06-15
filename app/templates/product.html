@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Product Data</title>
+</head>
+<body>
+    <h1>Product Data:</h1>
+    {% if product_data %}
+        <p><strong>Product:</strong> {{ product_data[1] }}</p>
+        <p><strong>URL:</strong> {{ product_data[2] }}</p>
+        <p><strong>Subcategory ID:</strong> {{ product_data[3] }}</p>
+    {% else %}
+        <p>No data found for the selected product.</p>
+    {% endif %}
+</body>
+</html>

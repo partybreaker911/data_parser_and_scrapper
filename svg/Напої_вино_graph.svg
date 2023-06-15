@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events" width="136" height="331" viewBox="-48 -273 136 331" preserveAspectRatio="none">
+<style type="text/css"><![CDATA[
+line { stroke-width:1px; }
+line.axes { stroke:#505050; }
+line.grid { stroke:#D8D8D8; }
+rect.bg { fill:#FFFFFF; }
+text { font-family:arial,sans-serif; font-size:12px; fill:#000000; }
+]]></style>
+<defs>
+<g id="hintbox"><rect x="0" y="0" width="77" height="34" style="stroke:#505050; stroke-width:1px; fill:rgba(255,255,255,0.87);" /><text id="hint0" x="4" y="14"> </text><text x="7" y="28"></text><text id="hint1" x="73" y="28" style="text-anchor:end;"> </text></g>
+<g id="hintline"><line x1="0" y1="-243" x2="0" y2="0" class="axes" style="stroke-dasharray:2 1" /></g>
+</defs>
+<script><![CDATA[
+function shb(x,y,dat) {
+ar=dat.split(' '); for (i=0; i<ar.length; ++i) { if (i&&ar[i]) ar[i]+=' грн.'; h=document.getElementById('hint'+i); h.textContent=ar[i]; }
+u=document.getElementById('usebox'); u.setAttribute('x',x); u.setAttribute('y',y); u.setAttribute('style','visibility:visible;'); }
+function hhb() { u=document.getElementById('usebox'); u.setAttribute('style','visibility:hidden;'); u.setAttribute('x','0'); u.setAttribute('y','0'); }
+function shl(x) { u=document.getElementById('useline'); u.setAttribute('x',x); u.setAttribute('style','visibility:visible;'); }
+function hhl() { u=document.getElementById('useline'); u.setAttribute('style','visibility:hidden;'); u.setAttribute('x','0'); }
+function sh(xl,xb,y,dat) { shl(xl); shb(xb,y,dat); }
+function hh() { hhb(); hhl(); }
+]]></script>
+<rect x="-48" y="-273" width="136" height="331" class="bg" />
+<line x1="17" y1="0" x2="17" y2="4" class="axes" /><text x="22" y="8" transform="rotate(-90,22,8)" style="text-anchor:end;">01.2023</text><line x1="44" y1="0" x2="44" y2="4" class="axes" /><text x="49" y="8" transform="rotate(-90,49,8)" style="text-anchor:end;">04.2023</text>
+<line x1="0" y1="-27" x2="69" y2="-27" class="grid" /><line x1="0" y1="-27" x2="-4" y2="-27" class="axes" /><text x="-8" y="-23" style="text-anchor:end;">92</text><line x1="0" y1="-54" x2="69" y2="-54" class="grid" /><line x1="0" y1="-54" x2="-4" y2="-54" class="axes" /><text x="-8" y="-50" style="text-anchor:end;">94</text><line x1="0" y1="-81" x2="69" y2="-81" class="grid" /><line x1="0" y1="-81" x2="-4" y2="-81" class="axes" /><text x="-8" y="-77" style="text-anchor:end;">96</text><line x1="0" y1="-108" x2="69" y2="-108" class="grid" /><line x1="0" y1="-108" x2="-4" y2="-108" class="axes" /><text x="-8" y="-104" style="text-anchor:end;">98</text><line x1="0" y1="-135" x2="69" y2="-135" class="grid" /><line x1="0" y1="-135" x2="-4" y2="-135" class="axes" /><text x="-8" y="-131" style="text-anchor:end;">100</text><line x1="0" y1="-162" x2="69" y2="-162" class="grid" /><line x1="0" y1="-162" x2="-4" y2="-162" class="axes" /><text x="-8" y="-158" style="text-anchor:end;">102</text><line x1="0" y1="-189" x2="69" y2="-189" class="grid" /><line x1="0" y1="-189" x2="-4" y2="-189" class="axes" /><text x="-8" y="-185" style="text-anchor:end;">104</text><line x1="0" y1="-216" x2="69" y2="-216" class="grid" /><line x1="0" y1="-216" x2="-4" y2="-216" class="axes" /><text x="-8" y="-212" style="text-anchor:end;">106</text><line x1="0" y1="-243" x2="69" y2="-243" class="grid" /><line x1="0" y1="-243" x2="-4" y2="-243" class="axes" /><text x="-8" y="-239" style="text-anchor:end;">108</text>
+<use xlink:href="#hintline" id="useline" x="0" style="visibility:hidden;" />
+<rect x="5" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(8,8,-249,'01.12.2022 101,60');" onmouseout="hh();" /><rect x="5" y="-157" width="6" height="157" style="fill:#0080C0;" onmouseover="sh(8,8,-249,'01.12.2022 101,60');" onmouseout="hh();" /><rect x="14" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(17,9,-249,'01.01.2023 100,67');" onmouseout="hh();" /><rect x="14" y="-144" width="6" height="144" style="fill:#0080C0;" onmouseover="sh(17,9,-249,'01.01.2023 100,67');" onmouseout="hh();" /><rect x="23" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(26,9,-249,'01.02.2023 104,93');" onmouseout="hh();" /><rect x="23" y="-202" width="6" height="202" style="fill:#0080C0;" onmouseover="sh(26,9,-249,'01.02.2023 104,93');" onmouseout="hh();" /><rect x="32" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(35,9,-249,'01.03.2023 100,96');" onmouseout="hh();" /><rect x="32" y="-148" width="6" height="148" style="fill:#0080C0;" onmouseover="sh(35,9,-249,'01.03.2023 100,96');" onmouseout="hh();" /><rect x="41" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(44,9,-249,'01.04.2023 101,61');" onmouseout="hh();" /><rect x="41" y="-157" width="6" height="157" style="fill:#0080C0;" onmouseover="sh(44,9,-249,'01.04.2023 101,61');" onmouseout="hh();" /><rect x="50" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(53,9,-249,'01.05.2023 103,48');" onmouseout="hh();" /><rect x="50" y="-182" width="6" height="182" style="fill:#0080C0;" onmouseover="sh(53,9,-249,'01.05.2023 103,48');" onmouseout="hh();" /><rect x="59" y="-243" width="6" height="243" style="fill:transparent;" onmouseover="sh(62,9,-249,'01.06.2023 94,73');" onmouseout="hh();" /><rect x="59" y="-64" width="6" height="64" style="fill:#0080C0;" onmouseover="sh(62,9,-249,'01.06.2023 94,73');" onmouseout="hh();" />
+<line x1="-6" y1="0" x2="72" y2="0" class="axes" /><line x1="0" y1="-259" x2="0" y2="0" class="axes" /><text x="-2" y="-263" style="text-anchor:end;">грн.</text>
+<use xlink:href="#hintbox" id="usebox" x="0" y="0" style="visibility:hidden;" />
+</svg>

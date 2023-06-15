@@ -15,6 +15,8 @@ matplotlib = "*"
 flask = "*"
 statsmodels = "*"
 beautifulsoup4 = "*"
+celery = "*"
+redis = "*"
 
 [dev-packages]
 
