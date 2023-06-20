@@ -1,66 +1,71 @@
-!DOCTYPE html>
+<!-- index.html -->
+
+<!DOCTYPE html>
 <html>
 <head>
-    <title>Product Selection</title>
-</head>
-<body>
-    <h1>Select a Category, Subcategory, and Product:</h1>
-    <form action="/products" method="POST">
-        <label for="category">Category:</label>
-        <select name="category" id="category">
-            {% for category in categories %}
-            <option value="{{ category[0] }}">{{ category[0] }}</option>
-            {% endfor %}
-        </select><br><br>
-
-        <label for="subcategory">Subcategory:</label>
-        <select name="subcategory" id="subcategory"></select><br><br>
-
-        <label for="product">Product:</label>
-        <select name="product" id="product"></select><br><br>
-
-        <input type="submit" value="Submit">
-    </form>
-
+    <title>Product Prices</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        // Fetch subcategories based on the selected category
-        document.getElementById('category').addEventListener('change', function () {
-            var category = this.value;
-            fetch('/subcategories?category=' + category)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    var subcategorySelect = document.getElementById('subcategory');
-                    subcategorySelect.innerHTML = '';
-                    data.forEach(function (subcategory) {
-                        var option = document.createElement('option');
-                        option.text = subcategory;
-                        option.value = subcategory;
-                        subcategorySelect.appendChild(option);
-                    });
-                });
-        });
+        $(document).ready(function() {
+            // Обработка изменений в выборе категории
+            $('#category').change(function() {
+                var category_id = $(this).val();
+                window.location.href = '/?category_id=' + category_id;
+            });
 
-        // Fetch products based on the selected subcategory
-        document.getElementById('subcategory').addEventListener('change', function () {
-            var subcategory = this.value;
-            var category = document.getElementById('category').value;
-            fetch('/products?category=' + category + '&subcategory=' + subcategory)
-                .then(function (response) {
-                    return response.json();
-                })
-                .then(function (data) {
-                    var productSelect = document.getElementById('product');
-                    productSelect.innerHTML = '';
-                    data.forEach(function (product) {
-                        var option = document.createElement('option');
-                        option.text = product;
-                        option.value = product;
-                        productSelect.appendChild(option);
-                    });
-                });
+            // Обработка изменений в выборе сети продуктов
+            $('#place').change(function() {
+                var category_id = $('#category').val();
+                var place_id = $(this).val();
+                var url = '/?category_id=' + category_id;
+                if (place_id !== '') {
+                    url += '&place_id=' + place_id;
+                }
+                window.location.href = url;
+            });
         });
     </script>
+</head>
+<body>
+    <h1>Product Prices</h1>
+
+    <form>
+        <label for="category">Select a category:</label>
+        <select name="category_id" id="category">
+            <option value="">All</option>
+            {% for category in categories %}
+                <option value="{{ category['id'] }}" {% if category['id'] == selected_category_id %}selected{% endif %}>{{ category['name'] }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="place">Select a place:</label>
+        <select name="place_id" id="place">
+            <option value="">All</option>
+            {% for place in places %}
+                <option value="{{ place['id'] }}" {% if place['id'] == selected_place_id %}selected{% endif %}>{{ place['name'] }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>{{ row['product_name'] }}</td>
+                    <td>{{ row['category_name'] }}</td>
+                    <td>{{ row['price'] }}</td>
+                    <td>{{ row['date'] }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </body>
 </html>

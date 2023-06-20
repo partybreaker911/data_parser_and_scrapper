@@ -17,6 +17,7 @@ statsmodels = "*"
 beautifulsoup4 = "*"
 celery = "*"
 redis = "*"
+aiohttp = "*"
 
 [dev-packages]
 

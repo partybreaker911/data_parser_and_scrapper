@@ -1,87 +1,71 @@
-import sqlite3
-
 from flask import Flask, render_template, request
-
+import sqlite3
 
 app = Flask(__name__)
 
+DATABASE = "your_database.db"  # Укажите имя вашей базы данных SQLite
 
-@app.route("/", methods=["GET"])
+
+def get_database_connection():
+    conn = sqlite3.connect(DATABASE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+@app.route("/")
 def index():
-    # Connect to the database
-    connection = sqlite3.connect("mydatabase.db")
-    cursor = connection.cursor()
+    conn = get_database_connection()
+    cursor = conn.cursor()
 
-    # Retrieve the available categories from the Category table
-    cursor.execute("SELECT category FROM Category")
+    # Получаем список категорий товаров
+    cursor.execute("SELECT id, name FROM Category")
     categories = cursor.fetchall()
 
-    connection.close()
+    selected_category_id = request.args.get("category_id")
+    selected_place_id = request.args.get("place_id")
 
-    return render_template("index.html", categories=categories)
+    if selected_category_id:
+        # Получаем данные о продуктах и ценах для выбранной категории и сети продуктов
+        query = """
+            SELECT pr.name AS product_name, c.name AS category_name, pp.price, pp.date
+            FROM ProductPrice pp
+            JOIN Product pr ON pp.product_id = pr.id
+            JOIN Category c ON pr.category_id = c.id
+        """
+        params = []
 
+        if selected_category_id != "":
+            query += "WHERE pr.category_id = ? "
+            params.append(selected_category_id)
 
-@app.route("/products", methods=["POST"])
-def display_product():
-    # Retrieve the selected category, subcategory, and product from the form submission
-    category = request.form["category"]
-    subcategory = request.form["subcategory"]
-    product = request.form["product"]
+        if selected_place_id != "":
+            if selected_category_id != "":
+                query += "AND pp.place_id = ? "
+            else:
+                query += "WHERE pp.place_id = ? "
+            params.append(selected_place_id)
 
-    # Connect to the database
-    connection = sqlite3.connect("mydatabase.db")
-    cursor = connection.cursor()
+        query += "ORDER BY pp.price ASC"
 
-    # Retrieve the data for the selected product from the Products table
-    cursor.execute("SELECT * FROM Products WHERE product = ?", (product,))
-    product_data = cursor.fetchone()
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+    else:
+        rows = []
 
-    connection.close()
+    # Получаем список сетей продуктов
+    cursor.execute("SELECT id, name FROM Place")
+    places = cursor.fetchall()
 
-    return render_template("product.html", product_data=product_data)
+    conn.close()
 
-
-@app.route("/subcategories", methods=["GET"])
-def get_subcategories():
-    # Retrieve the selected category from the query parameters
-    category = request.args.get("category")
-
-    # Connect to the database
-    connection = sqlite3.connect("mydatabase.db")
-    cursor = connection.cursor()
-
-    # Retrieve the subcategories for the selected category from the Subcategories table
-    cursor.execute(
-        "SELECT subcategory FROM Subcategories WHERE category_id IN (SELECT id FROM Category WHERE category = ?)",
-        (category,),
+    return render_template(
+        "index.html",
+        categories=categories,
+        rows=rows,
+        places=places,
+        selected_category_id=selected_category_id,
+        selected_place_id=selected_place_id,
     )
-    subcategories = cursor.fetchall()
-
-    connection.close()
-
-    return {"subcategories": [subcategory[0] for subcategory in subcategories]}
-
-
-@app.route("/products", methods=["GET"])
-def get_products():
-    # Retrieve the selected category and subcategory from the query parameters
-    category = request.args.get("category")
-    subcategory = request.args.get("subcategory")
-
-    # Connect to the database
-    connection = sqlite3.connect("mydatabase.db")
-    cursor = connection.cursor()
-
-    # Retrieve the products for the selected category and subcategory from the Products table
-    cursor.execute(
-        "SELECT product FROM Products WHERE subcategory_id IN (SELECT id FROM Subcategories WHERE subcategory = ? AND category_id IN (SELECT id FROM Category WHERE category = ?))",
-        (subcategory, category),
-    )
-    products = cursor.fetchall()
-
-    connection.close()
-
-    return {"products": [product[0] for product in products]}
 
 
 if __name__ == "__main__":
