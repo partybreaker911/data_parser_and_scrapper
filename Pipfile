@@ -20,6 +20,9 @@ redis = "*"
 aiohttp = "*"
 sqlalchemy = "*"
 flask-sqlalchemy = "*"
+flask-script = "*"
+python-dotenv = "*"
+watchdog = "*"
 
 [dev-packages]
 
