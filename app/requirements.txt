@@ -1,0 +1,5 @@
+Flask
+plotly
+Flask-Script==2.0.6
+gunicorn
+matplotlib
