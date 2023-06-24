@@ -18,6 +18,8 @@ beautifulsoup4 = "*"
 celery = "*"
 redis = "*"
 aiohttp = "*"
+sqlalchemy = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 
