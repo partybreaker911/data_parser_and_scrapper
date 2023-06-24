@@ -1,4 +1,5 @@
 import requests
+import sqlite3
 import re
 import csv
 from bs4 import BeautifulSoup
@@ -34,7 +35,7 @@ def scrape_data(url, base_url, headers):
     return data
 
 
-def scrape_product_data(urls, headers):
+def scrape_product_data(urls, base_url, headers):
     data = []
 
     for url in urls:
@@ -52,7 +53,7 @@ def scrape_product_data(urls, headers):
                     + " "
                     + th_elements[1].text.replace("\xa0", " ")
                 )
-                product_url = th_elements[0].find("a")["href"]
+                product_url = base_url + th_elements[0].find("a")["href"]
                 data.append((product_name, product_url))
         return data
 
@@ -74,6 +75,105 @@ def save_to_csv(data, filename):
 
 
 # Пример использования функции
+# url = "https://index.minfin.com.ua/ua/markets/wares/prods/"
+# base_url = "https://index.minfin.com.ua/ua/"
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+#     "Accept-Language": "en-US,en;q=0.9",
+#     "Referer": "https://www.google.com/",
+# }
+# data = scrape_data(url, base_url, headers)
+# sub_urls = []
+# for category, subcategories in data.items():
+#     for subcategory, subcategory_url in subcategories:
+#         sub_urls.append(subcategory_url)
+# for url in sub_urls:
+#     product_data = scrape_product_data([url], base_url, headers)
+#     print(product_data)
+#
+
+
+# print(product_data)
+def scrape_and_save_data(url, base_url, headers):
+    # Scrape data
+    data = scrape_data(url, base_url, headers)
+
+    # Save data to the database
+    save_to_database(data)
+
+
+def save_to_database(data):
+    # Create a connection to the SQLite database
+    conn = sqlite3.connect("product_data.db")
+    cursor = conn.cursor()
+
+    # Create tables
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Category (
+            id INTEGER PRIMARY KEY,
+            name TEXT
+        )
+    """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Subcategory (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            url TEXT,
+            category_id INTEGER,
+            FOREIGN KEY (category_id) REFERENCES Category(id)
+        )
+    """
+    )
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS Product (
+            id INTEGER PRIMARY KEY,
+            name TEXT,
+            url TEXT,
+            subcategory_id INTEGER,
+            FOREIGN KEY (subcategory_id) REFERENCES Subcategory(id)
+        )
+    """
+    )
+
+    # Insert data into tables
+    for category, subcategories in data.items():
+        cursor.execute("INSERT INTO Category (name) VALUES (?)", (category,))
+        category_id = cursor.lastrowid
+
+        for subcategory, subcategory_url in subcategories:
+            cursor.execute(
+                """
+                INSERT INTO Subcategory (name, url, category_id)
+                VALUES (?, ?, ?)
+            """,
+                (subcategory, subcategory_url, category_id),
+            )
+            subcategory_id = cursor.lastrowid
+
+            product_data = scrape_product_data([subcategory_url], base_url, headers)
+            for product_name, product_url in product_data:
+                cursor.execute(
+                    """
+                    INSERT INTO Product (name, url, subcategory_id)
+                    VALUES (?, ?, ?)
+                """,
+                    (product_name, product_url, subcategory_id),
+                )
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+    print("Data saved to the database.")
+
+
+# Пример использования функции
 url = "https://index.minfin.com.ua/ua/markets/wares/prods/"
 base_url = "https://index.minfin.com.ua/ua/"
 headers = {
@@ -81,14 +181,5 @@ headers = {
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": "https://www.google.com/",
 }
-data = scrape_data(url, base_url, headers)
-sub_urls = []
-for category, subcategories in data.items():
-    for subcategory, subcategory_url in subcategories:
-        sub_urls.append(subcategory_url)
-for url in sub_urls:
-    product_data = scrape_product_data([url], headers)
-    print(product_data)
-#
 
-# print(product_data)
+scrape_and_save_data(url, base_url, headers)
