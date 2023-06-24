@@ -57,34 +57,27 @@ def scrape_product_data(urls, base_url, headers):
         return data
 
 
-def scrape_product_table(product_urls):
-    # Список для хранения данных о продуктах
-    products_data = []
+def scrape_product_table(product_data):
+    # Dictionary to store product data
+    products_data = {}
 
-    # Перебор ссылок на продукты
-    for product_url in product_urls:
-        # Выполнение запроса к странице продукта
+    for product_name, product_url in product_data:
         response = requests.get(product_url)
         html = response.text
-
-        # Парсинг HTML
         soup = BeautifulSoup(html, "html.parser")
-
-        # Поиск таблицы с данными
         table = soup.find("div", class_="prodsdataview").find("table")
-
-        # Извлечение данных из таблицы
         rows = table.find_all("tr")
+        product_prices = []
+
         for row in rows:
-            # Извлечение данных из ячеек
             cells = row.find_all("td")
             if len(cells) == 4:
                 date = cells[0].text.strip()
                 price = cells[2].text.strip()
+                product_price = {"price": price, "date": date}
+                product_prices.append(product_price)
 
-                # Сохранение данных в список словарей
-                product_data = {"date": date, "price": price}
-                products_data.append(product_data)
+        products_data[product_name] = product_prices
 
     return products_data
 
@@ -101,12 +94,12 @@ headers = {
 data = scrape_data(url, base_url, headers)
 sub_urls = []
 prod_urls = []
+prod_data = []
 for category, subcategories in data.items():
     for subcategory, subcategory_url in subcategories:
         sub_urls.append(subcategory_url)
 for url in sub_urls:
     product_data = scrape_product_data([url], base_url, headers)
-for product_name, product_url in product_data:
-    prod_urls.append(product_url)
-for url in prod_urls:
-    scrape_product_table([url])
+    prod_data.extend(product_data)
+
+print(scrape_product_table(prod_data))
