@@ -1,4 +1,6 @@
 __pycache__/*
 .vscode/
 svg/*
+Pipenv
+Pipenv.lock
 old_but_goog_product_data.db
